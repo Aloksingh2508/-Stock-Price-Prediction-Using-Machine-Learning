@@ -9,6 +9,7 @@ A complete full-stack machine learning project for predicting stock prices using
 - **Modern Frontend:** Built with HTML, CSS, and JS. Features a responsive, glassmorphism UI, Dark Mode, and Chart.js integration.
 - **Live Data:** Fetches up-to-date historical and live stock data using the `yfinance` API.
 - **Multiple Stocks:** Supports predictions for AAPL, GOOGL, TSLA, TCS.NS, and RELIANCE.NS.
+- url:- https://explore-raebareli.vercel.app/
 
 ---
 
