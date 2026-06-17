@@ -481,15 +481,252 @@ function showToast(msg) {
   clearTimeout(t._t); t._t = setTimeout(() => { t.style.opacity = '0'; }, 3500);
 }
 
-// ── Init ──────────────────────────────────────────────────────────────
-async function init() {
+// ─── AUTHENTICATION STATE & LOGIC ──────────────────────────────────────
+let currentUser = null;
+let appLoaded = false;
+
+// Alert/Error handler
+function showAuthError(msg) {
+  const box = document.getElementById('auth-error');
+  if (box) {
+    box.textContent = msg;
+    box.style.display = 'block';
+  }
+}
+
+// Success callback
+function loginSuccess(user) {
+  currentUser = user;
+  
+  const avatarEl = document.getElementById('user-nav-avatar');
+  const nameEl = document.getElementById('user-nav-name');
+  
+  if (nameEl) nameEl.textContent = user.name;
+  if (avatarEl) {
+    if (user.picture) {
+      avatarEl.innerHTML = `<img src="${user.picture}" alt="${user.name}">`;
+    } else {
+      const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2);
+      avatarEl.textContent = initials || '👤';
+    }
+  }
+  
+  const profileNav = document.getElementById('user-profile-nav');
+  const loginContainer = document.getElementById('login-container');
+  const appContainer = document.getElementById('app-container');
+  
+  if (profileNav) profileNav.style.display = 'flex';
+  if (loginContainer) loginContainer.style.display = 'none';
+  if (appContainer) appContainer.style.display = 'block';
+  
+  // Initialize dashboard data
+  appBoot();
+}
+
+// Deferred App Boot
+async function appBoot() {
+  if (appLoaded) return;
+  appLoaded = true;
   startClock();
-  // Load exchange rate & market catalog in parallel (both fast)
   await Promise.allSettled([
     loadExchangeRate(),
-    loadMarketGrid()       // shows catalog instantly, prices load in background
+    loadMarketGrid()
   ]);
   setInterval(loadExchangeRate, 3_600_000);
+}
+
+// Google Identity Services Initializer
+function initGoogleSignIn() {
+  if (typeof google === 'undefined') {
+    console.warn('Google Identity Services script not loaded yet. Retrying in 1s...');
+    setTimeout(initGoogleSignIn, 1000);
+    return;
+  }
+  
+  try {
+    google.accounts.id.initialize({
+      client_id: "your-google-client-id-here.apps.googleusercontent.com",
+      callback: handleGoogleLoginResponse,
+      auto_select: false
+    });
+    
+    google.accounts.id.renderButton(
+      document.getElementById("google-signin-btn"),
+      { theme: "outline", size: "large", type: "standard", shape: "rectangular", text: "signin_with", logo_alignment: "left", width: "240" }
+    );
+  } catch (err) {
+    console.error('Failed to initialize Google Sign-in rendering:', err);
+  }
+}
+
+// Google Login Response Callback
+async function handleGoogleLoginResponse(response) {
+  try {
+    const res = await fetch(`${API}/api/auth/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential: response.credential }),
+      credentials: 'include'
+    });
+    const data = await res.json();
+    if (data.error) {
+      showAuthError(data.error);
+    } else {
+      loginSuccess(data.user);
+    }
+  } catch (err) {
+    showAuthError('Google Login failed. Could not communicate with server.');
+  }
+}
+
+// Auth Status Checker
+async function checkAuthStatus() {
+  try {
+    const res = await fetch(`${API}/api/auth/status`, { credentials: 'include' });
+    const data = await res.json();
+    if (data.logged_in) {
+      loginSuccess(data.user);
+    } else {
+      document.getElementById('login-container').style.display = 'flex';
+      document.getElementById('app-container').style.display = 'none';
+      initGoogleSignIn();
+    }
+  } catch (err) {
+    console.warn('Authentication status check failed. Running offline or backend offline.');
+    document.getElementById('login-container').style.display = 'flex';
+    document.getElementById('app-container').style.display = 'none';
+    initGoogleSignIn();
+  }
+}
+
+// Setup Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+  const tabLogin = document.getElementById('tab-login');
+  const tabRegister = document.getElementById('tab-register');
+  const formLogin = document.getElementById('form-login');
+  const formRegister = document.getElementById('form-register');
+  const authError = document.getElementById('auth-error');
+  const mockGoogleBtn = document.getElementById('mock-google-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  if (tabLogin && tabRegister && formLogin && formRegister) {
+    tabLogin.addEventListener('click', () => {
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      formLogin.style.display = 'flex';
+      formRegister.style.display = 'none';
+      if (authError) authError.style.display = 'none';
+    });
+
+    tabRegister.addEventListener('click', () => {
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      formRegister.style.display = 'flex';
+      formLogin.style.display = 'none';
+      if (authError) authError.style.display = 'none';
+    });
+  }
+
+  if (formLogin) {
+    formLogin.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      
+      try {
+        const res = await fetch(`${API}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.error) {
+          showAuthError(data.error);
+        } else {
+          loginSuccess(data.user);
+        }
+      } catch (err) {
+        showAuthError('Connection error. Is backend running?');
+      }
+    });
+  }
+
+  if (formRegister) {
+    formRegister.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('register-name').value.trim();
+      const email = document.getElementById('register-email').value.trim();
+      const password = document.getElementById('register-password').value;
+      
+      if (password.length < 8) {
+        showAuthError('Password must be at least 8 characters long.');
+        return;
+      }
+      
+      try {
+        const res = await fetch(`${API}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password }),
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.error) {
+          showAuthError(data.error);
+        } else {
+          loginSuccess(data.user);
+        }
+      } catch (err) {
+        showAuthError('Connection error. Is backend running?');
+      }
+    });
+  }
+
+  if (mockGoogleBtn) {
+    mockGoogleBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch(`${API}/api/auth/google`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ is_mock: true }),
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.error) {
+          showAuthError(data.error);
+        } else {
+          loginSuccess(data.user);
+        }
+      } catch (err) {
+        showAuthError('Mock Google Login failed. Could not communicate with server.');
+      }
+    });
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await fetch(`${API}/api/auth/logout`, { credentials: 'include' });
+        currentUser = null;
+        document.getElementById('app-container').style.display = 'none';
+        document.getElementById('login-container').style.display = 'flex';
+        
+        if (formLogin) formLogin.reset();
+        if (formRegister) formRegister.reset();
+        if (authError) authError.style.display = 'none';
+        
+        if (tabLogin) tabLogin.click();
+      } catch (err) {
+        console.error('Logout failed:', err);
+      }
+    });
+  }
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+async function init() {
+  await checkAuthStatus();
 }
 init();
 

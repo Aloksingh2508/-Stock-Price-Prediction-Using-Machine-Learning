@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, session
 from flask_cors import CORS
 from model import generate_predictions
 from utils import get_live_info, fetch_stock_data, compute_indicators
@@ -7,6 +7,49 @@ import numpy as np
 import os
 import json
 import urllib.request
+import sqlite3
+import base64
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# ─── DATABASE INITIALIZATION ──────────────────────────────────────────
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'users.db')
+
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            password_hash TEXT,
+            name TEXT,
+            picture TEXT,
+            auth_provider TEXT DEFAULT 'local',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
+
+def get_db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def decode_google_jwt(token):
+    try:
+        parts = token.split('.')
+        if len(parts) != 3:
+            return None
+        payload = parts[1]
+        payload += '=' * (4 - len(payload) % 4)
+        decoded = base64.urlsafe_b64decode(payload).decode('utf-8')
+        return json.loads(decoded)
+    except Exception as e:
+        print(f"Error decoding Google JWT: {e}")
+        return None
 
 # ─── Exchange Rate (3-source fallback chain) ─────────────────────────
 _usd_inr_rate = None   # cached so we don't hit the network on every request
@@ -54,7 +97,8 @@ def get_usd_inr():
 frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
 
 app = Flask(__name__, static_folder=frontend_dir, static_url_path='')
-CORS(app)
+app.secret_key = 'marketoracle_dev_secret_key_1337'
+CORS(app, supports_credentials=True)
 
 # ─── STOCK CATALOG ──────────────────────────────────────────────────────────────
 STOCKS = {
@@ -91,6 +135,170 @@ STOCKS = {
     "COIN":  {"name": "Coinbase Global",     "sector": "Crypto",       "flag": "🪙"},
     "PYPL":  {"name": "PayPal Holdings",     "sector": "Finance",      "flag": "💸"},
 }
+
+
+# ─── AUTHENTICATION ROUTES ───────────────────────────────────────────
+@app.route('/api/auth/register', methods=['POST'])
+def auth_register():
+    data = request.get_json() or {}
+    email = data.get('email', '').strip().lower()
+    password = data.get('password', '')
+    name = data.get('name', '').strip()
+
+    if not email or not password or not name:
+        return jsonify({"error": "All fields (name, email, password) are required."}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+        if cursor.fetchone():
+            conn.close()
+            return jsonify({"error": "An account with this email already exists."}), 400
+
+        password_hash = generate_password_hash(password)
+        cursor.execute(
+            "INSERT INTO users (email, password_hash, name, auth_provider) VALUES (?, ?, ?, 'local')",
+            (email, password_hash, name)
+        )
+        conn.commit()
+        
+        # Get the new user
+        cursor.execute("SELECT id, email, name, picture FROM users WHERE email = ?", (email,))
+        user = dict(cursor.fetchone())
+        conn.close()
+
+        session['user'] = {
+            "id": user['id'],
+            "email": user['email'],
+            "name": user['name'],
+            "picture": user['picture'] or '',
+            "provider": "local"
+        }
+        return jsonify({"success": True, "user": session['user']})
+    except Exception as e:
+        if conn:
+            conn.close()
+        return jsonify({"error": f"Registration failed: {str(e)}"}), 500
+
+
+@app.route('/api/auth/login', methods=['POST'])
+def auth_login():
+    data = request.get_json() or {}
+    email = data.get('email', '').strip().lower()
+    password = data.get('password', '')
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required."}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT id, email, password_hash, name, picture, auth_provider FROM users WHERE email = ?", (email,))
+        row = cursor.fetchone()
+        conn.close()
+
+        if not row:
+            return jsonify({"error": "Invalid email or password."}), 401
+
+        user = dict(row)
+        if user['auth_provider'] != 'local':
+            return jsonify({"error": f"Please sign in using your {user['auth_provider'].capitalize()} account."}), 400
+
+        if not check_password_hash(user['password_hash'], password):
+            return jsonify({"error": "Invalid email or password."}), 401
+
+        session['user'] = {
+            "id": user['id'],
+            "email": user['email'],
+            "name": user['name'],
+            "picture": user['picture'] or '',
+            "provider": "local"
+        }
+        return jsonify({"success": True, "user": session['user']})
+    except Exception as e:
+        return jsonify({"error": f"Login failed: {str(e)}"}), 500
+
+
+@app.route('/api/auth/google', methods=['POST'])
+def auth_google():
+    data = request.get_json() or {}
+    
+    # Check if this is a demo/mock request
+    is_mock = data.get('is_mock', False)
+    
+    if is_mock:
+        email = data.get('email', 'alok.singh@gmail.com').strip().lower()
+        name = data.get('name', 'Alok Singh').strip()
+        picture = data.get('picture', '')
+    else:
+        credential = data.get('credential')
+        if not credential:
+            return jsonify({"error": "Google ID credential is required."}), 400
+        
+        # Decode the credential (which is a JWT token)
+        claims = decode_google_jwt(credential)
+        if not claims:
+            return jsonify({"error": "Invalid Google credential token."}), 400
+        
+        email = claims.get('email', '').strip().lower()
+        name = claims.get('name', '').strip()
+        picture = claims.get('picture', '')
+
+    if not email:
+        return jsonify({"error": "Google account did not provide a valid email."}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT id, email, name, picture, auth_provider FROM users WHERE email = ?", (email,))
+        row = cursor.fetchone()
+        
+        if row:
+            user = dict(row)
+            # Update name/picture if changed
+            cursor.execute(
+                "UPDATE users SET name = ?, picture = ? WHERE email = ?",
+                (name or user['name'], picture or user['picture'], email)
+            )
+            conn.commit()
+            user_id = user['id']
+        else:
+            # Create user
+            cursor.execute(
+                "INSERT INTO users (email, name, picture, auth_provider) VALUES (?, ?, ?, 'google')",
+                (email, name, picture)
+            )
+            conn.commit()
+            user_id = cursor.lastrowid
+            
+        conn.close()
+
+        session['user'] = {
+            "id": user_id,
+            "email": email,
+            "name": name,
+            "picture": picture,
+            "provider": "google"
+        }
+        return jsonify({"success": True, "user": session['user']})
+    except Exception as e:
+        if conn:
+            conn.close()
+        return jsonify({"error": f"Google authentication failed: {str(e)}"}), 500
+
+
+@app.route('/api/auth/status', methods=['GET'])
+def auth_status():
+    if 'user' in session:
+        return jsonify({"logged_in": True, "user": session['user']})
+    return jsonify({"logged_in": False})
+
+
+@app.route('/api/auth/logout', methods=['POST', 'GET'])
+def auth_logout():
+    session.pop('user', None)
+    return jsonify({"success": True})
 
 
 @app.route('/')
@@ -162,7 +370,6 @@ def live_batch():
         print(f"[batch] error: {e}")
         # Fallback: return static info with 0 prices
         return jsonify({t: {"price": 0, "change_pct": 0, **STOCKS[t]} for t in tickers})
-
 
 
 @app.route('/api/compare')
