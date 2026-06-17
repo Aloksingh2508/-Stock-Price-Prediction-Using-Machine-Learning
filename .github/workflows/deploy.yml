@@ -18,4 +18,4 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git push --force https://Aloksingh2508:$HF_TOKEN@huggingface.co/spaces/Aloksingh2508/-Stock-Price-Prediction-Using-Machine-Learning main
+          git push --force https://Aloksingh2508:$HF_TOKEN@huggingface.co/spaces/Alok025/-Stock-Price-Prediction-Using-Machine-Learning main
