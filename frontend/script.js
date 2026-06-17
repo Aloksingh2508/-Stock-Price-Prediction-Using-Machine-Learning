@@ -588,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const formLogin = document.getElementById('form-login');
   const formRegister = document.getElementById('form-register');
   const authError = document.getElementById('auth-error');
-  const mockGoogleBtn = document.getElementById('mock-google-btn');
+
   const logoutBtn = document.getElementById('logout-btn');
 
   if (tabLogin && tabRegister && formLogin && formRegister) {
@@ -665,26 +665,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (mockGoogleBtn) {
-    mockGoogleBtn.addEventListener('click', async () => {
-      try {
-        const res = await fetch(`${API}/api/auth/google`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ is_mock: true }),
-          credentials: 'include'
-        });
-        const data = await res.json();
-        if (data.error) {
-          showAuthError(data.error);
-        } else {
-          loginSuccess(data.user);
-        }
-      } catch (err) {
-        showAuthError('Mock Google Login failed. Could not communicate with server.');
-      }
-    });
-  }
+
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
