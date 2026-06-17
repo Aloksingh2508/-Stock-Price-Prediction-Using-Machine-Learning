@@ -100,53 +100,53 @@ def generate_ai_suggestion(close_prices, rsi, macd, macd_signal, bb_upper, bb_lo
     signals = []
     score = 0
 
-    # RSI analysis — explained in plain English
+    # RSI analysis
     if rsi < 30:
-        signals.append(f"🟢 Momentum (RSI): {rsi:.1f} — The stock looks oversold. People may have sold too aggressively, which can create a buying opportunity.")
+        signals.append(f"🟢 Momentum (RSI): {rsi:.1f} — Oversold territory. Indicates potential reversal upward.")
         score += 2
     elif rsi < 45:
-        signals.append(f"🟡 Momentum (RSI): {rsi:.1f} — Slightly low. The stock has been leaning downward but not at an extreme level.")
+        signals.append(f"🟡 Momentum (RSI): {rsi:.1f} — Mild bearish divergence, consolidating in lower range.")
         score += 1
     elif rsi > 70:
-        signals.append(f"🔴 Momentum (RSI): {rsi:.1f} — The stock looks overbought. It may have risen too fast and could be due for a pullback.")
+        signals.append(f"🔴 Momentum (RSI): {rsi:.1f} — Overbought territory. Potential resistance or pullback indicator.")
         score -= 2
     elif rsi > 55:
-        signals.append(f"🟠 Momentum (RSI): {rsi:.1f} — Slightly elevated. The stock has been trending up but isn't at a danger zone yet.")
+        signals.append(f"🟠 Momentum (RSI): {rsi:.1f} — Moderate bullish momentum, approaching high range.")
         score -= 1
     else:
-        signals.append(f"⚪ Momentum (RSI): {rsi:.1f} — Neutral. No extreme buying or selling pressure right now.")
+        signals.append(f"⚪ Momentum (RSI): {rsi:.1f} — Neutral trading momentum.")
 
-    # MACD analysis — plain English
+    # MACD analysis
     if macd > macd_signal:
-        signals.append("🟢 Trend strength (MACD): The short-term trend is rising faster than the long-term — a positive (bullish) signal.")
+        signals.append("🟢 Trend (MACD): Bullish crossover. Short-term EMA has moved above long-term EMA.")
         score += 1
     else:
-        signals.append("🔴 Trend strength (MACD): The short-term trend is falling below the long-term — a negative (bearish) signal.")
+        signals.append("🔴 Trend (MACD): Bearish crossover. Short-term EMA is below long-term EMA.")
         score -= 1
 
-    # Bollinger Band analysis — plain English
+    # Bollinger Band analysis
     if current_price < bb_lower:
-        signals.append(f"🟢 Price range (Bollinger): At ${current_price:.2f}, the price is below the lower boundary — it may be unusually cheap right now.")
+        signals.append(f"🟢 Price Volatility (Bollinger): Current price is below lower band. Indication of short-term support.")
         score += 2
     elif current_price > bb_upper:
-        signals.append(f"🔴 Price range (Bollinger): At ${current_price:.2f}, the price is above the upper boundary — it may be unusually expensive right now.")
+        signals.append(f"🔴 Price Volatility (Bollinger): Current price is above upper band. Indication of short-term resistance.")
         score -= 2
     else:
-        signals.append(f"⚪ Price range (Bollinger): At ${current_price:.2f}, the price is within normal boundaries — no extreme valuation.")
+        signals.append(f"⚪ Price Volatility (Bollinger): Price consolidating within standard standard-deviation boundaries.")
 
-    # AI prediction analysis — plain English
+    # Model forecast analysis
     change_pct = ((predicted_next - current_price) / current_price) * 100
     if change_pct > 1.5:
-        signals.append(f"🟢 AI forecast: The model expects the price to rise by about +{change_pct:.1f}% — a meaningfully positive prediction.")
+        signals.append(f"🟢 Model Forecast: LSTM predicts price expansion of +{change_pct:.1f}% in the next sequence window.")
         score += 2
     elif change_pct > 0:
-        signals.append(f"🟡 AI forecast: The model expects a small rise of +{change_pct:.1f}% — mildly positive.")
+        signals.append(f"🟡 Model Forecast: LSTM predicts minor positive delta of +{change_pct:.1f}%.")
         score += 1
     elif change_pct > -1.5:
-        signals.append(f"🟠 AI forecast: The model expects a small dip of {change_pct:.1f}% — mildly cautious.")
+        signals.append(f"🟠 Model Forecast: LSTM predicts minor negative delta of {change_pct:.1f}%.")
         score -= 1
     else:
-        signals.append(f"🔴 AI forecast: The model expects a notable decline of {change_pct:.1f}% — a negative prediction.")
+        signals.append(f"🔴 Model Forecast: LSTM predicts price contraction of {change_pct:.1f}% in the next sequence window.")
         score -= 2
 
     # Final decision

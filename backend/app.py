@@ -69,7 +69,7 @@ def get_usd_inr():
             rate = float(df["Close"].iloc[-1])
             if 50 < rate < 200:           # sanity check – real INR range
                 _usd_inr_rate = round(rate, 4)
-                print(f"[rate] yfinance: 1 USD = ₹{_usd_inr_rate}")
+                print(f"[rate] yfinance: 1 USD = Rs. {_usd_inr_rate}")
                 return _usd_inr_rate
     except Exception as e:
         print(f"[rate] yfinance failed: {e}")
@@ -83,14 +83,14 @@ def get_usd_inr():
         rate = float(payload["rates"]["INR"])
         if 50 < rate < 200:
             _usd_inr_rate = round(rate, 4)
-            print(f"[rate] open.er-api: 1 USD = ₹{_usd_inr_rate}")
+            print(f"[rate] open.er-api: 1 USD = Rs. {_usd_inr_rate}")
             return _usd_inr_rate
     except Exception as e:
         print(f"[rate] open.er-api failed: {e}")
 
     # ── Method 3: last cached value ───────────────────────────────────
     fallback = _usd_inr_rate or 84.07
-    print(f"[rate] using cached/fallback: ₹{fallback}")
+    print(f"[rate] using cached/fallback: Rs. {fallback}")
     return fallback
 
 
@@ -228,8 +228,8 @@ def auth_google():
     is_mock = data.get('is_mock', False)
     
     if is_mock:
-        email = data.get('email', 'alok.singh@gmail.com').strip().lower()
-        name = data.get('name', 'Alok Singh').strip()
+        email = data.get('email', 'demo.user@gmail.com').strip().lower()
+        name = data.get('name', 'Demo User').strip()
         picture = data.get('picture', '')
     else:
         credential = data.get('credential')
@@ -334,7 +334,7 @@ def live_price():
 
 
 @app.route('/api/live_batch')
-def live_batch():
+def live_price_batch():
     """Live prices for all tickers in STOCKS. Fetches in one batch for speed."""
     tickers = list(STOCKS.keys())
     try:

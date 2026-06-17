@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="MarketOracle AI — India's smartest stock prediction engine. LSTM deep-learning meets real-time market data. Get AI-powered Buy/Sell signals in plain English."/>
-  <title>MarketOracle AI — Predict Smarter. Invest Wiser.</title>
+  <meta name="description" content="LSTM Stock Trend Predictor — A machine learning pipeline evaluating stock charts and forecasting future price movements using deep learning models."/>
+  <title>Stock Trend Predictor — LSTM Machine Learning Project</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -20,8 +20,8 @@
   <div class="login-card">
     <div class="login-header">
       <span class="login-brand-icon">🔮</span>
-      <h1 class="login-title">MarketOracle <span class="login-brand-ai">AI</span></h1>
-      <p class="login-subtitle">Predict Smarter. Invest Wiser.</p>
+      <h1 class="login-title">StockPredictor <span class="login-brand-ai">LSTM</span></h1>
+      <p class="login-subtitle">Deep Learning Trend Forecasting</p>
     </div>
     
     <!-- Tab Controls -->
@@ -49,7 +49,7 @@
     <form id="form-register" class="login-form" style="display: none;">
       <div class="input-group">
         <label for="register-name">Full Name</label>
-        <input type="text" id="register-name" required placeholder="Alok Singh" autocomplete="name"/>
+        <input type="text" id="register-name" required placeholder="Enter your name" autocomplete="name"/>
       </div>
       <div class="input-group">
         <label for="register-email">Email Address</label>
@@ -87,7 +87,7 @@
     <!-- Error/Alert Display -->
     <div id="auth-error" class="auth-error-box" style="display: none;"></div>
 
-    <p class="auth-footer-note">🎓 B.Tech Computer Science — LSTM Stock Prediction Engine</p>
+    <p class="auth-footer-note">🎓 B.Tech Computer Science — Final Year ML Project</p>
   </div>
 </div>
 
@@ -103,14 +103,14 @@
 <nav id="navbar">
   <div class="nav-brand">
     <span class="brand-icon">🔮</span>
-    <span class="brand-name">MarketOracle</span>
-    <span class="brand-tag">AI</span>
+    <span class="brand-name">StockPredictor</span>
+    <span class="brand-tag">LSTM</span>
   </div>
   <div class="nav-links">
     <a href="#home"           class="nav-link active">Home</a>
     <a href="#market-section" class="nav-link">Market</a>
     <a href="#predict-section"class="nav-link">Predict</a>
-    <a href="#how-it-works"   class="nav-link">How It Works</a>
+    <a href="#how-it-works"   class="nav-link">System Flow</a>
   </div>
   <div class="nav-right">
     <span class="inr-rate-badge" title="Live USD to Indian Rupee exchange rate">💱 <span id="inr-rate-display">Fetching rate…</span></span>
@@ -133,68 +133,68 @@
     <div class="brand-hero-block">
       <span class="brand-hero-icon">🔮</span>
       <div class="brand-hero-text">
-        <span class="brand-hero-name">MarketOracle</span><span class="brand-hero-ai"> AI</span>
+        <span class="brand-hero-name">StockPredictor</span><span class="brand-hero-ai"> LSTM</span>
       </div>
     </div>
 
-    <div class="hero-tagline">Predict Smarter. Invest Wiser.</div>
+    <div class="hero-tagline">LSTM Neural Network Engine</div>
 
-    <div class="hero-eyebrow">🎓 Final Year ML Project &nbsp;·&nbsp; LSTM Deep Learning &nbsp;·&nbsp; No Finance Degree Needed</div>
+    <div class="hero-eyebrow">🎓 B.Tech Computer Science Final Year Project · LSTM Architecture</div>
 
     <p class="hero-subtitle">
-      <strong>MarketOracle AI</strong> reads years of historical price patterns using a deep-learning model called <strong>LSTM</strong>, then tells you in plain English whether a stock looks like a good buy, a sell, or a wait — and <em>exactly why</em>.
+      This project implements a <strong>Long Short-Term Memory (LSTM)</strong> recurrent neural network model to analyze historical stock market prices and predict future trends. It displays key technical indicators (RSI, MACD, Bollinger Bands) alongside deep learning forecasts.
     </p>
     <div class="hero-cta-row">
-      <a href="#predict-section" class="cta-btn primary">🔮 Get AI Prediction</a>
-      <a href="#how-it-works"    class="cta-btn ghost">📖 How does it work?</a>
+      <a href="#predict-section" class="cta-btn primary">📈 Predict Stock Trends</a>
+      <a href="#how-it-works"    class="cta-btn ghost">🔬 System Workflow</a>
     </div>
     <div class="stats-row">
       <div class="stat-card">
-        <span class="stat-val">26+</span>
-        <span class="stat-label">Companies tracked</span>
+        <span class="stat-val">26</span>
+        <span class="stat-label">Tickers Available</span>
       </div>
       <div class="stat-card">
         <span class="stat-val">7 days</span>
-        <span class="stat-label">Price forecast ahead</span>
+        <span class="stat-label">Trend Forecast</span>
       </div>
       <div class="stat-card">
-        <span class="stat-val">4 signals</span>
-        <span class="stat-label">RSI · MACD · Bands · AI</span>
+        <span class="stat-val">4 Views</span>
+        <span class="stat-label">Technical Analytics</span>
       </div>
       <div class="stat-card">
-        <span class="stat-val">Real-time</span>
-        <span class="stat-label">Live Yahoo Finance data</span>
+        <span class="stat-val">Live Feed</span>
+        <span class="stat-label">Yahoo Finance Integration</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── HOW IT WORKS ───────────────────────────────────────────────────── -->
+<!-- ── SYSTEM WORKFLOW ───────────────────────────────────────────────────── -->
 <section id="how-it-works" class="section how-section">
   <div class="section-header center">
-    <h2 class="section-title">🤔 How does this work?</h2>
-    <p class="section-sub">Three simple steps — from raw data to plain-English advice</p>
+    <h2 class="section-title">🔬 System Workflow</h2>
+    <p class="section-sub">Pipeline steps — from raw data queries to trend estimation</p>
   </div>
   <div class="steps-row">
     <div class="step-card">
       <div class="step-num">1</div>
       <div class="step-icon">📥</div>
-      <h3 class="step-title">We fetch real prices</h3>
-      <p class="step-desc">We download up to 2 years of daily closing prices straight from Yahoo Finance for the stock you choose.</p>
+      <h3 class="step-title">1. Fetch Historical Data</h3>
+      <p class="step-desc">Retrieves up to 2 years of historical daily close values via the yfinance API to establish the training baseline.</p>
     </div>
     <div class="step-arrow">→</div>
     <div class="step-card">
       <div class="step-num">2</div>
       <div class="step-icon">🧠</div>
-      <h3 class="step-title">Our AI learns the pattern</h3>
-      <p class="step-desc">A deep-learning model called <strong>LSTM</strong> (Long Short-Term Memory) studies the price history — the same technique used in speech recognition and language translation.</p>
+      <h3 class="step-title">2. Train LSTM Model</h3>
+      <p class="step-desc">Uses a TensorFlow LSTM model to parse chronological sequences (time-steps) and detect price momentum trends.</p>
     </div>
     <div class="step-arrow">→</div>
     <div class="step-card">
       <div class="step-num">3</div>
-      <div class="step-icon">💬</div>
-      <h3 class="step-title">You get plain-English advice</h3>
-      <p class="step-desc">Instead of confusing charts, we translate the results into a clear recommendation: <strong>Buy, Sell, or Hold</strong> — with the reasons explained.</p>
+      <div class="step-icon">📊</div>
+      <h3 class="step-title">3. Generate Trend Forecast</h3>
+      <p class="step-desc">Aggregates model outputs and technical signals (RSI, MACD, Bollinger Bands) to output BUY/HOLD/SELL estimations.</p>
     </div>
   </div>
 </section>
@@ -202,12 +202,12 @@
 <!-- ── MARKET OVERVIEW ────────────────────────────────────────────────── -->
 <section id="market-section" class="section">
   <div class="section-header">
-    <h2 class="section-title">📊 What's the market doing today?</h2>
-    <p class="section-sub">Click any company card to select it for prediction. Green = going up today. Red = going down.</p>
+    <h2 class="section-title">📊 Active Market Tickers</h2>
+    <p class="section-sub">Select a company card below to run prediction models. Green = positive daily change. Red = negative change.</p>
   </div>
 
   <div class="sector-filters" id="sector-filters">
-    <button class="sector-btn active" data-sector="all">🌐 All Companies</button>
+    <button class="sector-btn active" data-sector="all">🌐 All Tickers</button>
     <button class="sector-btn" data-sector="watchlist">⭐ Watchlist</button>
     <button class="sector-btn" data-sector="Technology">💻 Tech</button>
     <button class="sector-btn" data-sector="Finance">🏦 Finance</button>
@@ -226,8 +226,8 @@
 <!-- ── PREDICT SECTION ────────────────────────────────────────────────── -->
 <section id="predict-section" class="section">
   <div class="section-header">
-    <h2 class="section-title">🔮 Ask the AI to predict a stock</h2>
-    <p class="section-sub">Pick up to 5 companies, choose how far back the AI should learn, then hit the button.</p>
+    <h2 class="section-title">🔮 Run LSTM Trend Model</h2>
+    <p class="section-sub">Select up to 5 tickers, choose historical dataset length, and run the training process.</p>
   </div>
 
   <div class="predict-controls">
@@ -244,21 +244,21 @@
 
       <div class="control-group">
         <label class="control-label">
-          📅 How far back should the AI learn?
-          <span class="hint">More data = more patterns learned. 1 year is a good balance.</span>
+          📅 Historical Training Dataset Length
+          <span class="hint">Specifies the sequence window depth. More history requires longer model fitting.</span>
         </label>
         <div class="period-tabs" id="period-tabs">
           <button class="period-tab" data-period="6mo">
             <span class="pt-val">6 months</span>
-            <span class="pt-sub">Faster · recent patterns</span>
+            <span class="pt-sub">Recent trends (shorter fitting)</span>
           </button>
           <button class="period-tab active" data-period="1y">
             <span class="pt-val">1 year</span>
-            <span class="pt-sub">Recommended</span>
+            <span class="pt-sub">Recommended window</span>
           </button>
           <button class="period-tab" data-period="2y">
             <span class="pt-val">2 years</span>
-            <span class="pt-sub">Deeper · slower</span>
+            <span class="pt-sub">Extended trends (longer fitting)</span>
           </button>
         </div>
       </div>
@@ -278,24 +278,24 @@
       </div>
 
       <div class="control-group">
-        <label class="control-label">⚡ Ready? Let the AI work its magic</label>
+        <label class="control-label">⚡ Run Prediction Pipeline</label>
         <button id="predict-btn" class="run-btn">
           <span class="btn-icon">🧠</span>
-          <span class="btn-text">Analyse &amp; Predict</span>
+          <span class="btn-text">Fit &amp; Forecast</span>
           <span class="btn-loader" hidden>
             <svg class="spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/>
             </svg>
           </span>
         </button>
-        <p class="run-note">⏱ This usually takes 30–90 seconds. The AI is literally training a neural network for you!</p>
+        <p class="run-note">⏱ Processing takes 15–30 seconds. The LSTM model is dynamically fitted to sequence batches.</p>
       </div>
     </div>
   </div>
 
   <!-- Progress -->
   <div id="progress-wrap" class="progress-wrap" hidden>
-    <div class="progress-label" id="progress-label">Starting up…</div>
+    <div class="progress-label" id="progress-label">Starting pipeline…</div>
     <div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div>
   </div>
 </section>
@@ -306,13 +306,13 @@
   <!-- AI Verdict Banner -->
   <div id="ai-banner" class="ai-banner">
     <div class="ai-banner-top">
-      <div class="ai-avatar">🤖</div>
+      <div class="ai-avatar">📊</div>
       <div class="ai-verdict-block">
-        <p class="ai-label">Our AI's verdict for <span id="ai-ticker-name">this stock</span>:</p>
+        <p class="ai-label">Trend signal prediction for <span id="ai-ticker-name">this stock</span>:</p>
         <div class="ai-action" id="ai-action">HOLD</div>
         <p class="ai-explanation" id="ai-explanation">Loading analysis…</p>
       </div>
-      <div class="ai-confidence-ring" title="How confident is the AI?">
+      <div class="ai-confidence-ring" title="Model confidence interval">
         <svg viewBox="0 0 60 60" class="ring-svg">
           <circle cx="30" cy="30" r="26" stroke="#ffffff22" stroke-width="4" fill="none"/>
           <circle cx="30" cy="30" r="26" stroke="var(--signal-color)" stroke-width="4" fill="none"
@@ -320,21 +320,21 @@
             stroke-linecap="round" transform="rotate(-90 30 30)"/>
         </svg>
         <span id="ring-pct" class="ring-pct">0%</span>
-        <p class="ring-label">AI confidence</p>
+        <p class="ring-label">Model Confidence</p>
       </div>
     </div>
-    <!-- Human-readable signal breakdown -->
+    <!-- Technical indicator signals -->
     <div class="ai-reasons-block">
-      <p class="reasons-title">🔎 Here's why the AI thinks so:</p>
+      <p class="reasons-title">🔎 Technical Indicator signals:</p>
       <div id="ai-signals-list" class="ai-signals-list"></div>
     </div>
   </div>
 
-  <!-- Plain-English KPI cards & Export Button -->
+  <!-- Key Metrics & Export Button -->
   <div class="kpi-section-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
     <div>
-      <h3 class="kpi-section-title">📋 Key Numbers — in Plain English</h3>
-      <p class="kpi-section-sub">Hover any card to understand what the number means.</p>
+      <h3 class="kpi-section-title">📊 Key Metrics</h3>
+      <p class="kpi-section-sub">Technical calculations based on parameters.</p>
     </div>
     <button id="export-report-btn" class="cta-btn ghost" style="padding: 0.5rem 1rem; font-size: 0.9rem;">📥 Download PDF Report</button>
   </div>
@@ -342,16 +342,16 @@
 
   <!-- Chart tabs with plain labels -->
   <div class="chart-tabs">
-    <button class="chart-tab active" data-tab="price-tab"  title="See what actually happened vs what the AI predicted">📈 Actual vs Predicted</button>
-    <button class="chart-tab" data-tab="rsi-tab"   title="Is the stock overbought or oversold?">🌡 Momentum (RSI)</button>
-    <button class="chart-tab" data-tab="macd-tab"  title="Is the trend accelerating or slowing?">📊 Trend Strength (MACD)</button>
-    <button class="chart-tab" data-tab="bb-tab"    title="Is the price unusually high or low?">〰 Price Range (Bollinger)</button>
-    <button class="chart-tab" data-tab="future-tab"title="Where might the price go next week?">🔮 Next 7 Days</button>
+    <button class="chart-tab active" data-tab="price-tab"  title="Compare real close values with sequence validation predictions">📈 Actual vs Predicted</button>
+    <button class="chart-tab" data-tab="rsi-tab"   title="Momentum range indicator">🌡 Momentum (RSI)</button>
+    <button class="chart-tab" data-tab="macd-tab"  title="MACD convergence indicator">📊 Trend Strength (MACD)</button>
+    <button class="chart-tab" data-tab="bb-tab"    title="Bollinger band volatility standard deviations">〰 Price Range (Bollinger)</button>
+    <button class="chart-tab" data-tab="future-tab"title="LSTM forward forecast">🔮 Next 7 Days</button>
   </div>
 
   <!-- Chart explainer strip -->
   <div id="chart-explainer" class="chart-explainer">
-    <span id="chart-explain-text">The solid line is the real historical price. The dashed line is what the AI predicted — see how closely they match!</span>
+    <span id="chart-explain-text">The solid line is the real historical price. The dashed line represents the LSTM model predictions.</span>
   </div>
 
   <div class="chart-panels">
@@ -364,7 +364,7 @@
 
   <!-- Glossary / explainer cards -->
   <div class="glossary-strip" id="glossary-strip">
-    <h3 class="glossary-title">📚 What do these terms mean?</h3>
+    <h3 class="glossary-title">📚 Terminology & Indicators</h3>
     <div class="glossary-grid">
       <div class="glossary-card">
         <span class="gl-icon">📉</span>
@@ -393,7 +393,7 @@
       </div>
       <div class="glossary-card">
         <span class="gl-icon">🎯</span>
-        <strong>AI Confidence %</strong>
+        <strong>Model Confidence %</strong>
         <p>How certain the AI is about its recommendation, calculated from how well it fitted the historical data and how strongly the market signals agree with each other.</p>
       </div>
     </div>
@@ -417,11 +417,11 @@
         <thead>
           <tr>
             <th>Company</th>
-            <th>AI Verdict</th>
+            <th>Model Recommendation</th>
             <th>Confidence</th>
             <th title="How accurate was the model?">Accuracy (RMSE ↓)</th>
             <th>Price Now</th>
-            <th>Price Tomorrow (AI)</th>
+            <th>Price Tomorrow (Model)</th>
             <th>Expected Change</th>
             <th title="0-100: below 30 = cheap, above 70 = expensive">Momentum (RSI)</th>
           </tr>
@@ -434,14 +434,14 @@
 
 <!-- ── DISCLAIMER ─────────────────────────────────────────────────────── -->
 <div class="disclaimer-banner">
-  ⚠️ <strong>Educational project only.</strong> This tool is built as a final-year machine learning demonstration. It is <em>not</em> financial advice. Never invest money based solely on AI predictions.
+  ⚠️ <strong>Educational project only.</strong> This tool is built as a final-year machine learning demonstration. It is <em>not</em> financial advice. Never invest money based solely on model predictions.
 </div>
 
 <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
 <footer class="footer">
   <div class="footer-content">
-    <div class="footer-brand">🔮 MarketOracle AI</div>
-    <div class="footer-tagline">Predict Smarter. Invest Wiser.</div>
+    <div class="footer-brand">🔮 StockPredictor LSTM</div>
+    <div class="footer-tagline">Deep Learning Trend Forecasting</div>
     <p class="footer-note">Built with Python &middot; Flask &middot; TensorFlow LSTM &middot; Yahoo Finance &middot; Chart.js</p>
     <p class="footer-note">Final Year Machine Learning Project &mdash; B.Tech Computer Science</p>
   </div>
